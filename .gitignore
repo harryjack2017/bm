@@ -16,3 +16,4 @@ conf/conf.py
 conf/*.mmdb
 conf/newrelic.ini
 handlers/global_view.py
+conf/route_map.py

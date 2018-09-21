@@ -6,7 +6,7 @@ from sanic.handlers import ErrorHandler
 from sanic.exceptions import NotFound
 from .middleware import append_logid, header_protect, append_req_context, append_headers, \
     append_user, mark_req_start_time, mark_req_end_time, gzip_res
-from conf import enum
+from conf import route_map
 
 
 class ExceptionHandler(ErrorHandler):
@@ -31,8 +31,8 @@ def settle(app: sanic.Sanic):
 
     app.add_route(handlers.HealthView.as_view(), '/')
     app.add_route(handlers.HealthView.as_view(), '/health')
-    add_route(app, enum.MOBIE_FLOW)
-    app.add_route(handlers.GasCardAccountInfo.as_view(), '/v1/bm/gascard_accountinfo')
+    add_route(app, route_map.MOBIE_FLOW)
+    add_route(app, route_map.GAS_CARD_ACCOUNT_INFO)
 
 
 def add_route(app, obj):
