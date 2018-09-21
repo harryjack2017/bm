@@ -31,10 +31,9 @@ def settle(app: sanic.Sanic):
 
     app.add_route(handlers.HealthView.as_view(), '/')
     app.add_route(handlers.HealthView.as_view(), '/health')
-    a = 'MobileFlowView'
     add_route(app, enum.MOBIE_FLOW)
     app.add_route(handlers.GasCardAccountInfo.as_view(), '/v1/bm/gascard_accountinfo')
 
 
 def add_route(app, obj):
-    app.add_route(obj['m'], obj['n'])
+    app.add_route(obj[0], obj[1])
