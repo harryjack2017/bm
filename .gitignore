@@ -1,0 +1,17 @@
+# ide
+*.iml
+.idea
+.vscode
+.DS_Store
+
+# python
+bmvenv
+enum
+*.pyc
+pyvenv.cfg
+
+# dev
+tmp
+conf/conf.py
+conf/*.mmdb
+conf/newrelic.ini
