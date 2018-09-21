@@ -6,12 +6,12 @@
 
 # python
 bmvenv
-enum
 *.pyc
 pyvenv.cfg
 
 # dev
 tmp
+conf/enum.py
 conf/conf.py
 conf/*.mmdb
 conf/newrelic.ini

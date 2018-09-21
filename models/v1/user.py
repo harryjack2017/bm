@@ -1,10 +1,9 @@
 from jwt import encode, decode, DecodeError
 from uuid import uuid4
-from models.v1 import enum
 import time
 import ujson
 from utils import logger
-from conf import conf
+from conf import conf, enum
 
 
 class User():

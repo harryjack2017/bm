@@ -1,8 +1,6 @@
 import ujson
-import asyncio
 from abc import ABC, abstractmethod
 from utils import logger
-from models.v1 import enum
 
 
 class BaseModel(ABC):

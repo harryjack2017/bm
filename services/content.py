@@ -5,11 +5,10 @@ from thrift import TTornado
 from thrift.protocol.TCompactProtocol import TCompactProtocolFactory
 from .thrift.recommend import RecommendService, ttypes as recttypes
 from .thrift.di import DIService, ttypes as dittypes
-from conf import conf
+from conf import conf, enum
 from .redis_client import redis
 from .mem_cache import MemCache
 from utils import logger
-from models.v1 import enum
 
 RECO_SERVICE_NAME = 'RECO'
 DI_SERVICE_NAME = 'DI'

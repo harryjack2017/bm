@@ -1,4 +1,4 @@
-from models.v1 import enum
+from conf import enum
 
 
 class RecResult:

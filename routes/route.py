@@ -5,8 +5,8 @@ from sanic.response import text
 from sanic.handlers import ErrorHandler
 from sanic.exceptions import NotFound
 from .middleware import append_logid, header_protect, append_req_context, append_headers, \
-    append_user, mark_req_start_time, mark_req_end_time, gzip_res, cdn_cache
-from conf import conf
+    append_user, mark_req_start_time, mark_req_end_time, gzip_res
+from conf import enum
 
 
 class ExceptionHandler(ErrorHandler):
@@ -31,6 +31,10 @@ def settle(app: sanic.Sanic):
 
     app.add_route(handlers.HealthView.as_view(), '/')
     app.add_route(handlers.HealthView.as_view(), '/health')
-
-    app.add_route(handlers.MobileFlowView.as_view(), '/v1/bm/mobie_flow/<mobile_no:string>/<flow:string>')
+    a = 'MobileFlowView'
+    add_route(app, enum.MOBIE_FLOW)
     app.add_route(handlers.GasCardAccountInfo.as_view(), '/v1/bm/gascard_accountinfo')
+
+
+def add_route(app, obj):
+    app.add_route(obj['m'], obj['n'])

@@ -2,14 +2,13 @@ from services.thrift.di import ttypes as dittypes
 from services import fetch_di_detail_page_info, fetch_di_one_detail, \
                      get_history_multiple, get_watchlist_multiple, get_subscribe_multiple, get_thumb_multiple, \
                      get_history_single, get_watchlist_single, get_subscribe_single, get_thumb_single
-from models.v1 import enum
+from conf import enum
 from .resource import ShortVideo, Publisher, MovieFilm, MusicVideo, MusicPlaylistQueue, \
                       MusicPlaylist, MusicAlbum, MusicAlbumQueue, MusicArtist, TvEpisode, TvSeason, TvShow
 from .resource.live_tv import LiveChannel, LiveProgramme, LiveChannelPagingPrograms
 from .request_body import RecResult
 from .container.ua_card_paging import UaCardPaging
 from .container.tab.card_paging import TabCardPaging
-from .resource.browse_card import BrowseItemPaging
 from .resource.browse_card import BrowseCardItem
 from .resource.game import Game
 
