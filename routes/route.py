@@ -32,7 +32,9 @@ def settle(app: sanic.Sanic):
     app.add_route(handlers.HealthView.as_view(), '/')
     app.add_route(handlers.HealthView.as_view(), '/health')
     add_route(app, route_map.MOBIE_FLOW)
+    add_route(app, route_map.TEST_MOBILE_FLOW)
     add_route(app, route_map.GAS_CARD_ACCOUNT_INFO)
+    add_route(app, route_map.GAS_CARD_PAYBILL)
 
 
 def add_route(app, obj):

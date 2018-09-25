@@ -2,6 +2,8 @@ import hashlib
 import time
 from conf import enum
 
+ENCODING = 'utf-8'
+
 
 def gen_sign(params):
     ps = [enum.APP_SECRET]
@@ -19,3 +21,16 @@ def gen_urls(params):
     urls.extend([f'{i}={params[i]}' for i in sorted(params)])
     urls.append(f'sign={sign}')
     return '&'.join(urls)
+
+
+def md5_str(str):
+    hl = hashlib.md5()
+    hl.update(str.encode(encoding=ENCODING))
+    return hl.hexdigest()
+
+
+def get_token(params):
+    ps = [enum.BM_KEY_TEST]
+    ps.extend([f'{i}{params[i]}' for i in sorted(params)])
+    ps.append(enum.BM_KEY_TEST)
+    return md5_str(''.join(ps))

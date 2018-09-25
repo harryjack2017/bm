@@ -2,12 +2,14 @@ from sanic import Sanic
 from utils import LOGGING_CONFIG, logger
 import routes
 from conf import conf
-from services import http_request
+from services import http_request, redis_client
 
 app = Sanic(log_config=LOGGING_CONFIG)
 
 
 async def app_init_tasks(app, loop):
+    await redis_client.redis.prepare_conn()
+
     await http_request.init_session()
 
     from utils import server_state

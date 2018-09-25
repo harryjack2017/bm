@@ -11,6 +11,8 @@ from conf import conf
 from utils import logger
 from utils.jsonv import validate
 from .req_context import ReqContext
+from handlers import base_fn
+from conf import enum
 
 MIME_TYPES_TO_GZIP = frozenset([
     'text/html', 'text/css', 'text/xml',
@@ -18,10 +20,11 @@ MIME_TYPES_TO_GZIP = frozenset([
     'application/javascript'])
 GZIP_MIN_SIZE = 500
 GZIP_LEVEL = 5
-PROTECT_HEADERS = \
-    ['X-App-Version', 'X-AV-Code', 'X-Client-Id', 'X-Country', 'X-Density', 'X-Lang', 'X-Platform', 'X-Resolution'] \
-        if conf.IS_PROD \
-        else []
+PROTECT_HEADERS = ['xtimestamp', 'xtoken']
+
+
+# if conf.IS_PROD \
+# else []
 
 
 class Helper:
@@ -40,7 +43,7 @@ def append_logid(req):
 
 
 def header_protect(req):
-    if req.path == '/health' or req.path == '/':
+    if req.path == '/health' or req.path == '/' or req.path.find('/v1/bm_test') >= 0:
         return
 
     for h in PROTECT_HEADERS:
@@ -108,20 +111,21 @@ def append_user(req):
 
 
 def append_headers(req):
-    prefer_lang = req.headers.get('x-prefer-lang').split(';') if req.headers.get('x-prefer-lang') else []
-    # prefer_lang = [enum.LANGUAGE_MAPPING.get(lang) for lang in prefer_lang if lang in enum.LANGUAGE_MAPPING]
-    # prefer_lang.sort()
-
-    app_code = req.headers.get('x-app-version', '9999999999')
-    req['xheaders'] = {
-        'lang': req.headers.get('x-lang', 'en'),
-        'country': req.headers.get('x-country', 'us'),
-        'density': req.headers.get('x-density', '1'),
-        'prefer-lang': prefer_lang,
-        'app-version': app_code[3:],
-        'app-code': app_code,
-        'av-code': req.headers.get('x-av-code')
-    }
+    pass
+    # prefer_lang = req.headers.get('x-prefer-lang').split(';') if req.headers.get('x-prefer-lang') else []
+    # # prefer_lang = [enum.LANGUAGE_MAPPING.get(lang) for lang in prefer_lang if lang in enum.LANGUAGE_MAPPING]
+    # # prefer_lang.sort()
+    #
+    # app_code = req.headers.get('x-app-version', '9999999999')
+    # req['xheaders'] = {
+    #     'lang': req.headers.get('x-lang', 'en'),
+    #     'country': req.headers.get('x-country', 'us'),
+    #     'density': req.headers.get('x-density', '1'),
+    #     'prefer-lang': prefer_lang,
+    #     'app-version': app_code[3:],
+    #     'app-code': app_code,
+    #     'av-code': req.headers.get('x-av-code')
+    # }
 
 
 def cdn_cache(req, res):
@@ -142,11 +146,26 @@ def path_params(f):
 
 def body_validators(*schemas):
     def f(g):
-        async def h(req):
+        async def h(view, req):
             for schema in schemas:
                 if validate(req.json, schema):
-                    return await g(req)
+                    return await g(view, req)
             return text('param is not right', 400)
+
+        return h
+
+    return f
+
+
+def query_validators(*schemas):
+    def f(g):
+        async def h(view, req):
+            args = {key: req['context'].path_params.get(key) for key in req['context'].path_params}
+            for schema in schemas:
+                if validate(args, schema):
+                    return await g(view, req)
+
+            return text('', 400)
 
         return h
 
@@ -162,3 +181,21 @@ def path_content(path):
         return h
 
     return f
+
+
+def token_validate(f):
+    @wraps(f)
+    async def g(view, req, **kwargs):
+        req.session['islogin'] = True
+
+        params = req.json or {}
+        params['method'] = req.path.replace('/v1/bm/', '')
+        params['v'] = enum.BM_VERSION
+        params['secret'] = enum.BM_SECRET_TEST
+        params['xtimestamp'] = req.headers.get('xtimestamp')
+        xtoken = base_fn.get_token(params)
+        if xtoken != req.headers.get('xtoken'):
+            return text('token invalid', 401)
+        return await f(view, req)
+
+    return g

@@ -8,6 +8,7 @@
 bmvenv
 *.pyc
 pyvenv.cfg
+*.md
 
 # dev
 tmp

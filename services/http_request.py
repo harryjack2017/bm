@@ -75,10 +75,22 @@ async def get_request(url, params=None, headers=None):
 
 
 @timing
-async def get_flow(req, urls):
+async def get_mobile_flow(req, urls):
     return await get_request(f'{conf.BM_SERVER}?{urls}')
+
+
+@timing
+async def test_mobie_flow(req, urls, headers):
+    return await get_request(f'{conf.BM_TEST_SERVER}{urls}', headers=headers)
 
 
 @timing
 async def get_gas_account_info(req, urls):
     return await post_request(f'{conf.BM_SERVER}?{urls}')
+
+
+@timing
+async def get_gas_card_pay_bill(req, urls):
+    res = await post_request(f'{conf.BM_SERVER}?{urls}')
+    print(res)
+    return res
