@@ -14,7 +14,8 @@ class OauthTokenCode(HTTPMethodView):
             return text('user not registerd', 401)
         return json({
             'access_token': token['access_token'],
-            'sub': token['account_id']
+            'sub': token['account_id'],
+            'token_type': 'jwt'
         })
 
 

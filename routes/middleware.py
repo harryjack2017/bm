@@ -43,12 +43,13 @@ def append_logid(req):
 
 
 def header_protect(req):
-    if req.path == '/health' or req.path == '/' or req.path.find('/v1/bm_test') >= 0:
+    if req.path == '/health' or req.path == '/' or req.path.find('/v1/bm_test') >= 0 or req.path.find(
+            '/v1/auth') >= 0:
         return
     #
-    # for h in PROTECT_HEADERS:
-    #     if req.headers.get(h) is None:
-    #         return text('', 404)
+    for h in PROTECT_HEADERS:
+        if req.headers.get(h) is None:
+            return text('', 404)
 
 
 def gzip_res(req, res):
@@ -93,11 +94,6 @@ def mark_req_end_time(req, res):
             logger.info(f"[longtime] {Helper.req_log(req, res, time_ms_spent)}")
     else:
         logger.info(Helper.req_log(req, res, time_ms_spent))
-
-    if 'path_content' in req:
-        record_path = req['path_content']
-    else:
-        record_path = req.path
 
 
 def append_req_context(req):
