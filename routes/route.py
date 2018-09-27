@@ -36,6 +36,9 @@ def settle(app: sanic.Sanic):
     add_route(app, route_map.GAS_CARD_ACCOUNT_INFO)
     add_route(app, route_map.GAS_CARD_PAYBILL)
 
+    add_route(app, route_map.AUTH_TOKEN_CODE)
+    add_route(app, route_map.AUTH_ACCOUNTS_WXAPP)
+
 
 def add_route(app, obj):
     app.add_route(obj[0], obj[1])

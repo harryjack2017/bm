@@ -45,10 +45,10 @@ def append_logid(req):
 def header_protect(req):
     if req.path == '/health' or req.path == '/' or req.path.find('/v1/bm_test') >= 0:
         return
-
-    for h in PROTECT_HEADERS:
-        if req.headers.get(h) is None:
-            return text('', 404)
+    #
+    # for h in PROTECT_HEADERS:
+    #     if req.headers.get(h) is None:
+    #         return text('', 404)
 
 
 def gzip_res(req, res):
@@ -186,7 +186,7 @@ def path_content(path):
 def token_validate(f):
     @wraps(f)
     async def g(view, req, **kwargs):
-        req.session['islogin'] = True
+        # req.session['islogin'] = True
 
         params = req.json or {}
         params['method'] = req.path.replace('/v1/bm/', '')

@@ -25,6 +25,12 @@ thrift==0.11.0
 tornado==5.1
 ujson==1.35
 URLObject==2.4.3
-uvloop==0.9.1
+uvloop==0.11.2
 websockets==4.0.1
 yarl==1.2.6
+pymongo==3.7.1
+python-dateutil==2.7.3
+python-weixin==0.4.1
+pycrypto==2.6.1
+bcrypt==3.1.4
+mongoengine==0.15.3
