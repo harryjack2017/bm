@@ -8,7 +8,7 @@ app = Sanic(log_config=LOGGING_CONFIG)
 
 
 async def app_init_tasks(app, loop):
-    await redis_client.redis.prepare_conn()
+    # await redis_client.redis.prepare_conn()
 
     await http_request.init_session()
 
