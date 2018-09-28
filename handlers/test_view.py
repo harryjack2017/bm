@@ -11,34 +11,20 @@ import time
 
 class TestMobileFlowView(HTTPMethodView):
     async def get(self, req):
-        xtimestamp = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
-        params = {
-            "method": 'mobie_flow/15910863994/1000',
-            "secret": "1dfed139-2926-4f75-91aa-87ea962c9592",
-            "v": "v1",
-            "xtimestamp": xtimestamp
-        }
-        xtoken = base_fn.get_token(params)
+        xtoken, xtimestamp = base_fn.prepare_test_param({"method": 'mobie_flow/15910863994/1000'})
         headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
-
         urls = "/v1/bm/mobie_flow/15910863994/1000"
         res = await http_request.test_mobie_flow(req, urls, headers=headers)
-        res = ujson.loads(res)
-
-        return json(res)
+        return json(ujson.loads(res))
 
 
-class GasCardAccountInfo(HTTPMethodView):
-    @path_params
-    @body_validators(Validators.schema_gas_card_account_info)
-    @token_validate
-    async def post(self, req):
+class TestGasCardAccountInfo(HTTPMethodView):
+    async def get(self, req):
         body = req.json
         params = {
             "method": enum.GAS_CARD_ITEM_LIST
         }
         urls = base_fn.gen_urls(params)
-        print(f'{conf.BM_SERVER}?{urls}')
         res = await http_request.get_gas_account_info(req, urls)
         res = ujson.loads(res)
         return json(res)
@@ -59,7 +45,6 @@ class GasCardPayBill(HTTPMethodView):
             'callback': 'http://127.0.0.1:5005/v1/bm/message'
         }
         urls = base_fn.gen_urls(params)
-        print(f'{conf.BM_SERVER}?{urls}')
         res = await http_request.get_gas_card_pay_bill(req, urls)
         res = ujson.loads(res)
         return json(res)

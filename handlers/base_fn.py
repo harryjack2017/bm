@@ -14,7 +14,7 @@ def gen_sign(params):
 
 def gen_urls(params):
     params['timestamp'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-    params['access_token'] = enum.ACCESS_TOKEN
+    params['access_token'] = enum.BM_ACCESS_TOKEN
     params['v'] = '1.1'
     sign = gen_sign(params).upper()
     urls = []
@@ -34,3 +34,16 @@ def get_token(params):
     ps.extend([f'{i}{params[i]}' for i in sorted(params)])
     ps.append(enum.BM_KEY_TEST)
     return md5_str(''.join(ps))
+
+
+def prepare_test_param(params):
+    xtimestamp = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+    config = {
+        "secret": enum.BM_SECRET_TEST,
+        "v": "v1",
+        "xtimestamp": xtimestamp
+    }
+    for p in params:
+        config[p] = params[p]
+
+    return get_token(config), xtimestamp
