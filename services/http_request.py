@@ -75,22 +75,22 @@ async def get_request(url, params=None, headers=None):
 
 
 @timing
-async def get_mobile_flow(req, urls):
+async def test_get_api(req, urls, headers):
+    res = await get_request(f'{enum.BM_TEST_SERVER}{enum.BM_URL}{urls}', headers=headers)
+    return res
+
+
+@timing
+async def test_post_api(req, urls, body=None, data=None, headers=None):
+    res = await post_request(f'{enum.BM_TEST_SERVER}{enum.BM_URL}{urls}', body=body, data=data, headers=headers)
+    return res
+
+
+@timing
+async def get_api(req, urls):
     return await get_request(f'{enum.BM_SERVER}?{urls}')
 
 
 @timing
-async def test_mobie_flow(req, urls, headers):
-    return await get_request(f'{enum.BM_TEST_SERVER}{urls}', headers=headers)
-
-
-@timing
-async def get_gas_account_info(req, urls):
+async def post_api(req, urls):
     return await post_request(f'{enum.BM_SERVER}?{urls}')
-
-
-@timing
-async def get_gas_card_pay_bill(req, urls):
-    res = await post_request(f'{enum.BM_SERVER}?{urls}')
-    print(res)
-    return res

@@ -34,10 +34,14 @@ def settle(app: sanic.Sanic):
     add_route(app, route_map.MOBIE_FLOW)
     add_route(app, route_map.TEST_MOBILE_FLOW)
     add_route(app, route_map.GAS_CARD_ACCOUNT_INFO)
+    add_route(app, route_map.TEST_GAS_CARD_ACCOUNT_INFO)
     add_route(app, route_map.GAS_CARD_PAYBILL)
 
     add_route(app, route_map.AUTH_TOKEN_CODE)
     add_route(app, route_map.AUTH_ACCOUNTS_WXAPP)
+
+    add_route(app, route_map.FINANCE_ACCINFO)
+    add_route(app, route_map.TEST_FINANCE_ACCINFO)
 
 
 def add_route(app, obj):

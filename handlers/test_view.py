@@ -13,21 +13,39 @@ class TestMobileFlowView(HTTPMethodView):
     async def get(self, req):
         xtoken, xtimestamp = base_fn.prepare_test_param({"method": 'mobie_flow/15910863994/1000'})
         headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
-        urls = "/v1/bm/mobie_flow/15910863994/1000"
-        res = await http_request.test_mobie_flow(req, urls, headers=headers)
+        urls = "/mobie_flow/15910863994/1000"
+        res = await http_request.test_get_api(req, urls, headers=headers)
         return json(ujson.loads(res))
 
 
 class TestGasCardAccountInfo(HTTPMethodView):
     async def get(self, req):
-        body = req.json
-        params = {
-            "method": enum.GAS_CARD_ITEM_LIST
+        body = {
+            "province": "天津",
+            "operator": "sinopec",
+            "card_no": "1000111200008936352"
         }
-        urls = base_fn.gen_urls(params)
-        res = await http_request.get_gas_account_info(req, urls)
-        res = ujson.loads(res)
-        return json(res)
+        params = {}
+        for i in body:
+            params[i] = body[i]
+        params['method'] = 'gascard_accountinfo'
+        xtoken, xtimestamp = base_fn.prepare_test_param(params)
+        headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
+        urls = "/gascard_accountinfo"
+        res = await http_request.test_post_api(req, urls, headers=headers, body=body)
+        return json(ujson.loads(res))
+
+
+class TestFinanceAccInfo(HTTPMethodView):
+    async def get(self, req):
+        params = {
+            'method': 'finance_accinfo'
+        }
+        xtoken, xtimestamp = base_fn.prepare_test_param(params)
+        headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
+        urls = "/finance_accinfo"
+        res = await http_request.test_get_api(req, urls, headers=headers)
+        return json(ujson.loads(res))
 
 
 class GasCardPayBill(HTTPMethodView):
