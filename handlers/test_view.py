@@ -4,18 +4,32 @@ from . import base_fn
 from services import http_request
 import ujson
 from conf import enum, conf
-from sanic.response import json
+from sanic.response import json, text
 from handlers.validators import Validators
-import time
+import copy
+
+
+async def fetch_res(req, body, method):
+    try:
+        params = copy.copy(body)
+        params['method'] = method
+        xtoken, xtimestamp = base_fn.prepare_test_param(params)
+        headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
+        urls = f"/{method}"
+        res = await http_request.test_post_api(req, urls, headers=headers, body=body)
+        return json(ujson.loads(res))
+    except Exception as e:
+        return text('failed', 500)
 
 
 class TestMobileFlowView(HTTPMethodView):
     async def get(self, req):
-        xtoken, xtimestamp = base_fn.prepare_test_param({"method": 'mobie_flow/15910863994/1000'})
-        headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
-        urls = "/mobie_flow/15910863994/1000"
-        res = await http_request.test_get_api(req, urls, headers=headers)
-        return json(ujson.loads(res))
+        body = {
+            "mobile_no": "15910863994",
+            "recharge_amount": "300"
+        }
+        from conf import route_map
+        return await fetch_res(req, body, route_map.MOBILE_FLOW)
 
 
 class TestGasCardAccountInfo(HTTPMethodView):
@@ -25,15 +39,20 @@ class TestGasCardAccountInfo(HTTPMethodView):
             "operator": "sinopec",
             "card_no": "1000111200008936352"
         }
-        params = {}
-        for i in body:
-            params[i] = body[i]
-        params['method'] = 'gascard_accountinfo'
-        xtoken, xtimestamp = base_fn.prepare_test_param(params)
-        headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
-        urls = "/gascard_accountinfo"
-        res = await http_request.test_post_api(req, urls, headers=headers, body=body)
-        return json(ujson.loads(res))
+        from conf import route_map
+        return await fetch_res(req, body, route_map.GAS_CARD_ACCOUNT_INFO)
+
+
+class TestGasCardPayBill(HTTPMethodView):
+    async def get(self, req):
+        body = {
+            "item_id": "64357114",
+            "gas_card_tel": "18033616617",
+            "gas_card_name": "董明瑞",
+            "card_no": "1000111100017573362"
+        }
+        from conf import route_map
+        return await fetch_res(req, body, route_map.GAS_CARD_PAYBILL)
 
 
 class TestFinanceAccInfo(HTTPMethodView):
@@ -46,6 +65,21 @@ class TestFinanceAccInfo(HTTPMethodView):
         urls = "/finance_accinfo"
         res = await http_request.test_get_api(req, urls, headers=headers)
         return json(ujson.loads(res))
+
+
+class TestCardPassItemList(HTTPMethodView):
+    async def get(self, req):
+        params = {
+            'method': 'cardpasslist'
+        }
+        xtoken, xtimestamp = base_fn.prepare_test_param(params)
+        headers = {'xtoken': xtoken, 'xtimestamp': xtimestamp}
+        urls = "/cardpasslist"
+        res = await http_request.test_get_api(req, urls, headers=headers)
+        try:
+            return json(ujson.loads(res))
+        except Exception as e:
+            return text(res, 401)
 
 
 class GasCardPayBill(HTTPMethodView):

@@ -4,13 +4,13 @@ from conf import enum
 class Validators:
     schema_mobile_flow = {
         'type': 'object',
-        'required': ['mobile_no', 'flow'],
+        'required': ['mobile_no', 'recharge_amount'],
         'properties': {
             'mobile_no': {
                 'type': 'string',
                 'minLength': 11
             },
-            'flow': {
+            'recharge_amount': {
                 'type': 'string',
                 'minLength': 1
             }
@@ -34,9 +34,26 @@ class Validators:
         }
     }
 
+    schema_gas_card_item_list = {
+        'type': 'object',
+        'required': ['province', 'operator', 'card_no'],
+        'properties': {
+            'province': {
+                'enum': enum.PROVINCES
+            },
+            'operator': {
+                'enum': enum.OPERATORS
+            },
+            'card_no': {
+                'minLength': 16,
+                'maxLength': 19
+            }
+        }
+    }
+
     schema_gas_card_pay_bill = {
         'type': 'object',
-        'required': ['item_id', 'gas_card_tel', 'gas_card_name','card_no'],
+        'required': ['item_id', 'gas_card_tel', 'gas_card_name', 'card_no'],
         'properties': {
             'item_id': {
                 'type': 'string',
