@@ -26,6 +26,8 @@ class AccountsWxapp(HTTPMethodView):
         iv = req.json.get('password')
         code = req.json.get('code')
         user_info = get_wxapp_userinfo(encrypted_data, iv, code)
+        if not user_info:
+            return text('user not registerd', 401)
         openid = user_info.get('openId')
         account = Account.get_by_wxapp(openid=openid)
         if account:

@@ -62,7 +62,7 @@ def get_wxapp_userinfo(encrypted_data, iv, code):
     try:
         session_info = api.exchange_code_for_session_key(code=code)
     except OAuth2AuthExchangeError as e:
-        raise Unauthorized(e.code, e.description)
+        return None
     session_key = session_info.get('session_key')
     crypt = WXBizDataCrypt(appid, session_key)
     user_info = crypt.decrypt(encrypted_data, iv)
@@ -71,9 +71,12 @@ def get_wxapp_userinfo(encrypted_data, iv, code):
 
 def verify_wxapp(encrypted_data, iv, code):
     user_info = get_wxapp_userinfo(encrypted_data, iv, code)
-    openid = user_info.get('openId', None)
-    if openid:
-        return Account.get_by_wxapp(openid)
+    if user_info:
+        openid = user_info.get('openId', None)
+        if openid:
+            return Account.get_by_wxapp(openid)
+    else:
+        return None
 
 
 def create_token(request):
